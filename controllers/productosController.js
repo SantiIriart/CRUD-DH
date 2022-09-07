@@ -3,6 +3,16 @@ let data = fs.readFileSync('./db.json', 'utf8');
 let dataJSON = JSON.parse(data);
 
 
+const validarId = (id) => {
+    let found = undefined;
+        dataJSON.forEach((elem, i) => {
+            if (elem.id === id) {
+                found = i;
+            } 
+        })
+    return found;
+}
+
 
 const productosControladores = {
     listarProductos: (req, res) => {
@@ -22,19 +32,19 @@ const productosControladores = {
     
     eliminarProducto: (req, res) => {
         const id = Number(req.params.id);
-        
-        // Valida id
-        const idFound = dataJSON.find((elem) => {
-        //  console.log(dataJSON);
-            elem.id == id
-        })
+        found = validarId(id);
 
         // Si lo encontró lo elimina de la 
-        if(idFound){
-            let arrDelete = dataJSON.slice(idFound, 1);
-            let dataNew = JSON.stringify(arrDelete);
-            fs.writeFileSync('./db.json', dataNew, 'utf8')
+        if(found != undefined){
+            dataJSON.splice(found, 1);
+            fs.writeFileSync('./db.json', JSON.stringify(dataJSON), 'utf8')
+            res.send('Borrado')
         }
+
+       
+       // https://meet.google.com/zoz-htqc-bkg
+
+
     },
   
     modificarProducto: (req, res) => {
